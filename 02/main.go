@@ -26,19 +26,27 @@ func part2() {
 func solve(input []string, atLeastTwice bool) int {
 	var total int
 
-	idRanges := strings.Split(input[0], ",")
+	idRanges := strings.SplitSeq(input[0], ",")
 
-	for _, idRange := range idRanges {
+	for idRange := range idRanges {
 		spl := strings.Split(idRange, "-")
 		start, _ := strconv.Atoi(spl[0])
 		end, _ := strconv.Atoi(spl[1])
+		end += 1
 
 	outer:
-		for i := start; i < end+1; i++ {
+		for i := start; i < end; i++ {
 			s := strconv.Itoa(i)
+			slen := len(s)
+
+			if s[0:slen/2] == s[slen/2:] {
+				total += i
+				continue
+			}
 
 			if atLeastTwice {
-				for j := 1; j < len(s)/2+1; j++ {
+				term := slen/2 + 1
+				for j := 1; j < term; j++ {
 					sr := strings.ReplaceAll(s, s[:j], "")
 					if sr == "" {
 						total += i
@@ -46,16 +54,6 @@ func solve(input []string, atLeastTwice bool) int {
 					}
 				}
 			}
-
-			if len(s)%2 != 0 {
-				continue
-			}
-
-			if s[0:len(s)/2] != s[len(s)/2:] {
-				continue
-			}
-
-			total += i
 		}
 	}
 
